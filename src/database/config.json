@@ -1,0 +1,29 @@
+{
+    "development": {
+        "username": "dev_db_userm_userx",
+        "password": "47aqeEwvaIr4W8",
+        "database": "dev-api-user",
+        "host": "18.199.86.27",
+        "dialect": "postgres",
+        "port": 5432,
+        "logging": false
+    },
+    "test": {
+        "username": "postgres",
+        "password": "password",
+        "database": "user-module",
+        "host": "127.0.0.1",
+        "dialect": "postgres",
+        "port": 5432,
+        "logging": false
+    },
+    "production": {
+        "username": "postgres",
+        "password": "password",
+        "database": "user-module",
+        "host": "127.0.0.1",
+        "dialect": "postgres",
+        "port": 5432,
+        "logging": false
+    }
+}

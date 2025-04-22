@@ -1,31 +1,34 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { UsersService } from './users/users.service';
-import { AuthModule } from './auth/auth.module';
-
+import { UsersModule } from './users/users.module';
+import { DatabaseModule } from './database/database.module';
+import { JwtModule } from '@nestjs/jwt';
+import { jwtConstants } from './utils/constants';
+import { KycModule } from './kyc/kyc.module';
+import { HttpModule } from '@nestjs/axios';
+import { ConfigModule } from '@nestjs/config';
+import { TopKYCModule } from './topkyc/topkyc.module';
+import { LoggerMiddleware } from 'logger.middleware';
 @Module({
   imports: [
-    ConfigModule.forRoot({isGlobal:true}),
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: async (config: ConfigService) => ({
-        type: 'postgres',
-        host: config.get('POSTGRES_HOST'),
-        port: config.get<number>('POSTGRES_PORT'),
-        username: config.get('POSTGRES_USER'),
-        password: config.get('POSTGRES_PASSWORD'),
-        database: config.get('POSTGRES_DB'),
-        autoLoadEntities: true,
-        synchronize: true,
-      }),
-      inject: [ConfigService],
+    ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
+    DatabaseModule,
+    UsersModule,
+    HttpModule,
+    TopKYCModule,
+    JwtModule.register({
+      global: true,
+      secret: jwtConstants.secret,
+      signOptions: { expiresIn: '60s' },
     }),
-    AuthModule,
+    KycModule,
   ],
   controllers: [AppController],
-  providers: [AppService, UsersService],
+  providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}
