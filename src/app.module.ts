@@ -1,3 +1,4 @@
+// app.module.ts
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -10,10 +11,12 @@ import { HttpModule } from '@nestjs/axios';
 import { ConfigModule } from '@nestjs/config';
 import { TopKYCModule } from './topkyc/topkyc.module';
 import { LoggerMiddleware } from 'logger.middleware';
+import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
     DatabaseModule,
+    AuthModule,
     UsersModule,
     HttpModule,
     TopKYCModule,

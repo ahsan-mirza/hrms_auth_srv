@@ -14,30 +14,27 @@ import {
   Request,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { Response } from 'express';
-import { CheckReferralCodeDto } from './dto/check-referral-code.dto';
-import { CheckUsernameDto } from './dto/check-username.dto';
+import { CreateUserDTO } from './dto/create-user.dto';
 import { CheckEmailDto } from './dto/check-email.dto';
-import {
-  AcceptLegalDocumentDto,
-  CreateLegalDocumentDto,
-} from './dto/legal-document.dto';
-import { UserDevicesService } from './user-device.services';
+
 import { PaginationDto } from './dto/pagination.dto';
 import { AuthGuard } from './guards/auth.guard';
+import { MessagePattern } from '@nestjs/microservices';
+import { routes } from 'src/routes';
+import { CheckUsernameDTO } from './dto/check-username.dto';
 
 @Controller('users')
 export class UsersController {
-  constructor(
-    private readonly usersService: UsersService,
-    private readonly userDevicesService: UserDevicesService,
-  ) {}
+  constructor(private readonly usersService: UsersService) {}
+
+  @MessagePattern(routes.HELLOUSER)
+  getHello(): any {
+    return { message: 'Hello Kafka ' };
+  }
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.sendOtpForRegistration(createUserDto);
+  create(@Body() createUserDTO: CreateUserDTO) {
+    return this.usersService.sendOtpForRegistration(createUserDTO);
   }
 
   @UseGuards(AuthGuard)
@@ -48,16 +45,13 @@ export class UsersController {
     return this.usersService.getUserInformation(res.user.id);
   }
 
-  @Get('check-referral-code')
-  async checkReferralCode(@Query() query: CheckReferralCodeDto) {
-    return this.usersService.checkReferralCode(query.code);
-  }
 
-  @Get('check-username')
-  async cehckUsername(@Query() query: CheckUsernameDto) {
+
+  @Get('check-userName')
+  async cehckUsername(@Query() query: CheckUsernameDTO) {
     console.log({ query });
 
-    return this.usersService.usernameAvailability(query.username);
+    return this.usersService.userNameAvailability(query.userName);
   }
 
   @Get('check-email')
@@ -66,14 +60,11 @@ export class UsersController {
     return this.usersService.cehckEmailAvailability(query.email);
   }
 
-  @Get('questions')
-  async getQuestions() {
-    return this.usersService.getRegisterQuestion();
-  }
+
 
   @Post('send-otp')
-  async sendOtpRegistration(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.sendOtpForRegistration(createUserDto);
+  async sendOtpRegistration(@Body() createUserDTO: CreateUserDTO) {
+    return this.usersService.sendOtpForRegistration(createUserDTO);
   }
 
   @Post('verify-otp')
@@ -104,37 +95,9 @@ export class UsersController {
   getCommunity(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.getDirectCommunity(id);
   }
-  @Get('fullcommunity/:id')
-  getMyFullCommunity(@Param('id', ParseIntPipe) id: number) {
-    return this.usersService.getMyCommunity(id);
-  }
 
-  @Get('document-content')
-  getDocumentContent(@Query('type') type: string) {
-    return this.usersService.getLegalDocument(type);
-  }
 
-  @Post('document-content')
-  createDocument(@Body() body: any) {
-    console.log('body', body);
-    return this.usersService.createLegalDocument(body);
-  }
-
-  @Post('accept-document')
-  createDocumentAcceptance(@Body() body: any) {
-    return this.usersService.acceptLegalDocument(body);
-  }
-  @UseGuards(AuthGuard)
-  @Get('recent-devices')
-  async getRecentDevices(
-    @Request() req,
-    // @Query() paginationDto: PaginationDto,
-  ) {
-    // return {};
-    // const { page = 1, limit = 10 } = {paginationDto};
-    console.log('🚀 ~ UsersController ~ paginationDto:');
-    // return this.userDevicesService.getRecentDevices(req.user.id, 1, +10);
-  }
+  
 
   // @Get('bulk')
   // bulkCreateUserSeederWithNested() {
@@ -150,7 +113,7 @@ export class UsersController {
   // }
 
   // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  // update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDTO) {
   //   return this.usersService.update(+id, updateUserDto);
   // }
 

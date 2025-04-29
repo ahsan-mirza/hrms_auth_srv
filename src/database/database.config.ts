@@ -18,31 +18,37 @@ interface Config {
 
 const databaseConfig: Config = {
   development: {
-    username: process.env.DB_USERNAME || 'root',
-    password: process.env.DB_PASSWORD || 'password',
-    database: process.env.DB_NAME || 'user-module',
-    host: process.env.DB_HOST || '127.0.0.1',
-    dialect: process.env.DB_DIALECT || 'mysql',
-    logging: process.env.DB_LOGGING === 'true' || false,
-    port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 5432,
+    username: process.env.POSTGRES_USER || 'root',
+    password: process.env.POSTGRES_PASSWORD || 'password',
+    database: process.env.POSTGRES_DB || 'user-module',
+    host: process.env.POSTGRES_HOST || '127.0.0.1',
+    dialect: process.env.POSTGRES_DIALECT || 'mysql',
+    logging: process.env.POSTGRES_LOGGING === 'true' || false,
+    port: process.env.POSTGRES_PORT
+      ? parseInt(process.env.POSTGRES_PORT)
+      : 5432,
   },
   test: {
-    username: process.env.DB_USERNAME || 'root',
-    password: process.env.DB_PASSWORD || null, // Allow password to be null
-    database: process.env.DB_NAME_TEST || 'database_test',
-    host: process.env.DB_HOST || '127.0.0.1',
-    dialect: process.env.DB_DIALECT || 'mysql',
-    logging: process.env.DB_LOGGING === 'true' || false,
-    port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 3306,
+    username: process.env.POSTGRES_USER || 'root',
+    password: process.env.POSTGRES_PASSWORD || null, // Allow password to be null
+    database: process.env.POSTGRES_DB_TEST || 'database_test',
+    host: process.env.POSTGRES_HOST || '127.0.0.1',
+    dialect: process.env.POSTGRES_DIALECT || 'mysql',
+    logging: process.env.POSTGRES_LOGGING === 'true' || false,
+    port: process.env.POSTGRES_PORT
+      ? parseInt(process.env.POSTGRES_PORT)
+      : 3306,
   },
   production: {
-    username: process.env.DB_USERNAME || 'root',
-    password: process.env.DB_PASSWORD || null, // Allow password to be null
-    database: process.env.DB_NAME || 'user-module',
-    host: process.env.DB_HOST || '127.0.0.1',
-    dialect: process.env.DB_DIALECT || 'mysql',
-    logging: process.env.DB_LOGGING === 'true' || false,
-    port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 3306,
+    username: process.env.POSTGRES_USER || 'root',
+    password: process.env.POSTGRES_PASSWORD || null, // Allow password to be null
+    database: process.env.POSTGRES_DB || 'user-module',
+    host: process.env.POSTGRES_HOST || '127.0.0.1',
+    dialect: process.env.POSTGRES_DIALECT || 'mysql',
+    logging: process.env.POSTGRES_LOGGING === 'true' || false,
+    port: process.env.POSTGRES_PORT
+      ? parseInt(process.env.POSTGRES_PORT)
+      : 3306,
   },
 };
 
